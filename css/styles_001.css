@@ -1,0 +1,37 @@
+body {font-family:"Trebuchet MS";}
+
+h1, h2 {margin: 0.5em 0; font-weight: bold;}
+
+#page {margin-left: 20px; width: 960px;}
+#page h2 {font-size: larger;}
+
+#head {padding-bottom: 10px;}
+#head h1 {font-size: x-large;}
+#head li {display: inline; border: 1px solid #DDD; padding: 4px;background-color:#999;}
+#head a {color:#FFF;}
+#head a:hover {color:#fff; background:#369; text-decoration:none;}
+
+#content li {margin-bottom:15px; padding: 5px; border: 4px solid gold; background-color: #EEE; width: 50%;}
+#content .campaign {display: block; font-weight:bold; padding-bottom: 3px;}
+
+#content #ideas .ideameta {margin: 0.25em 0; padding: 0.25em; border: 1px dashed #AAA; background-color: #DDD;}
+#content #ideas .tags {padding:5px 0px 5px 0px;}
+#content #ideas .tag {border: 1px solid grey; padding:2px; background-color: silver; color: yellow;}
+
+#content #ideas .idea-head {font-weight: bold; font-size: large; padding: 0.5em 0 0.5em 0;} */
+#content #ideas .idea-body {padding-bottom: 15px; margin: 0px;}
+
+#content #ideas .voteoptions {float:right; display:block; text-align:right;}
+#content #ideas .voteoptions a {text-decoration:none;}
+#content #ideas .voteoptions .votedown {color: red}
+#content #ideas .voteoptions .voteup {color: green}
+#content #ideas .idea {float:left;}
+#content #ideas .ideatitle {float:left;}
+#content #ideas .vote {color: orange;}
+
+#content #idea-form label {width: 400px; display:block; padding-bottom: 2px;}
+#content #idea-form p {padding: 5px 0; clear:both;}
+
+#content .not-working {background-color: red;}
+
+#error li {border: 4px solid red;}
