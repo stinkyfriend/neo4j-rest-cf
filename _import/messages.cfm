@@ -64,7 +64,12 @@ DELETE everyones ACTIVITIES and the relationships to the activities
 	<ul>
 	<cfloop array="#arr#" index="person">
 		<li>#person#</li>
-		<cfhttp method="get" url="#randomText#" result="resp">
+		<cfset httpparams = {method="get",url=randomText,result="resp"}>
+		<cfif StructKeyExists(application, "import_proxyserver") AND len(application.import_proxyserver)>
+			<cfset httpparams["proxyserver"] = application.import_proxyserver>
+		</cfif>
+		
+		<cfhttp attributeCollection="#httpparams#">
 			
 		<cfif StructKeyExists(resp, "mimetype") AND resp.mimetype is "application/json"
 				AND StructKeyExists(resp, "statuscode") AND resp.statuscode is "200 ok">

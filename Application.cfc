@@ -5,10 +5,12 @@
 	this.name = "Neo4j";
 	this.sessionManagement = true;
 	this.sessionTimeout = createTimeSpan(0,0,5,0);
+	this.mappings["/"] = getDirectoryFromPath(getCurrentTemplatePath());
 		
 	public boolean function onApplicationStart( ) {
 		/* The base url for Neo4j */
 		application.urlNeo4j = "http://localhost:7474/db/data";
+		application.import_proxyserver = "";
 		
 		setup();
 		
@@ -40,7 +42,7 @@
 		
 		/* You can explicitly tell your application what relationships you want from your reference node */
 		application.requires = {"MESSAGES_REFERENCE"="","USERS_REFERENCE"=""};
-		
+
 		objServiceRoot = CreateObject("component","core.serviceRoot");
 		str = objServiceRoot.getServiceRoot();
 		
@@ -57,7 +59,7 @@
 
 		}
 	}
-	
+
 	public void function onError( exception ) {
 		/* The error handling bit.
 			If setting up the application fails then we include the error.cfm.
