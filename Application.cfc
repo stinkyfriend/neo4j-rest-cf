@@ -42,6 +42,10 @@
 		
 		/* You can explicitly tell your application what relationships you want from your reference node */
 		application.requires = {"MESSAGES_REFERENCE"="","USERS_REFERENCE"=""};
+		
+		requiresCount = StructCount(application.requires);
+		
+		application.ready = false;
 
 		objServiceRoot = CreateObject("component","core.serviceRoot");
 		str = objServiceRoot.getServiceRoot();
@@ -54,9 +58,10 @@
 			for (i = 1; i LTE ArrayLen(arrOutRels); i++) {
 				if (StructKeyExists(application.requires, arrOutRels[i].type)) {
 					application.requires["#arrOutRels[i].type#"] = ListLast(arrOutRels[i].end, "/");
+					requiresCount = requiresCount - 1;
 				}
 			}
-
+			application.ready = requiresCount eq 0;
 		}
 	}
 

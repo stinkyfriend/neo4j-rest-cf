@@ -1,24 +1,26 @@
-<cfset objPeople = createObject("component","components.people")>
-<cfparam name="url.user" default="andrew_fandrew">
-<cfparam name="url.load" default="10">
-<cfset currentUser = objPeople.findPerson(url.user)>
-
-<cfset userInitialised = structKeyExists(currentUser, "data")>
-<cfif userInitialised>
-	<cfset following = objPeople.getFollowing(identifier=currentUser.node)>
-	<cfset followers = objPeople.getFollowers(identifier=currentUser.node)>
-	<cfset activities = objPeople.getFollowedActivites(identifier=currentUser.node, howmany=url.load)>
-</cfif>
-<cfscript>
-	function GetEpochTime( datetime ) {
-	    return int(DateDiff("s", "January 1 1970 00:00", datetime));
-	}
+<cfif application.ready>
+	<cfset objPeople = createObject("component","components.people")>
+	<cfparam name="url.user" default="andrew_fandrew">
+	<cfparam name="url.load" default="10">
+	<cfset currentUser = objPeople.findPerson(url.user)>
 	
-	function GetTimeFromEpoch( epoch ) {
-	    return dateAdd("s", epoch, "january 1 1970 00:00:00");
-	}
-</cfscript>
-
+	<cfset userInitialised = structKeyExists(currentUser, "data")>
+	<cfif userInitialised>
+		<cfset following = objPeople.getFollowing(identifier=currentUser.node)>
+		<cfset followers = objPeople.getFollowers(identifier=currentUser.node)>
+		<cfset activities = objPeople.getFollowedActivites(identifier=currentUser.node, howmany=url.load)>
+	</cfif>
+	
+	<cfscript>
+		function GetEpochTime( datetime ) {
+		    return int(DateDiff("s", "January 1 1970 00:00", datetime));
+		}
+		
+		function GetTimeFromEpoch( epoch ) {
+		    return dateAdd("s", epoch, "january 1 1970 00:00:00");
+		}
+	</cfscript>
+</cfif>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -66,9 +68,10 @@
     </div>
 
     <div class="container">
+    	
+		<cfif application.ready>
 
-      <!-- Main hero unit for a primary marketing message or call to action -->
-        <form action="controller/ctl_message.cfm" method="post" class="well form-horizontal">
+      	<form action="controller/ctl_message.cfm" method="post" class="well form-horizontal">
             <cfoutput>Hi #currentUser.data[1][1].data.firstname#, want to share something?</cfoutput><br />
             <input type="text" class="input-xlarge span9" name="message" id="input01" />
 			<cfoutput><input type="hidden" name="user" value="#url.user#" /></cfoutput>
@@ -77,6 +80,8 @@
                 <i class="icon-comment icon-white"></i>
             </button>
         </form>
+		
+		
 
       <!-- Example row of columns -->
       <div class="row">
@@ -96,7 +101,7 @@
 		  <h2>Activity</h2>
           <ul>
           	<cfloop array="#activities.data#" index="activity">
-		  		<li>#activity[2] & ' ' & activity[3]# - #activity[1]# (#GetTimeFromEpoch(activity[6])#)</li>
+		  		<li>#activity[2] & ' ' & activity[3]# - #activity[1]# (#GetTimeFromEpoch(activity[5])#)</li>
 			</cfloop>
           </ul>
           <p><a class="btn" href="?user=#url.user#&load=#url.load+10#">Load more &raquo;</a></p>
@@ -117,6 +122,20 @@
 		  </ul>
         </div>
       </div>
+	  
+	  <cfelse>
+			
+			<form action="controller/ctl_message.cfm" method="post" class="well form-horizontal">
+            To experiment with the demo app please run the import scripts:
+			<ol>
+				<li><a href="_import/people.cfm">people</a></li>
+				<li><a href="_import/followers.cfm">followers</a></li>
+				<li><a href="_import/messages.cfm">messages</a></li>
+			</ol>
+			Then <a href="?restart=1">restart the application</a>.
+        	</form>
+		
+		</cfif>
 
       <hr>
 

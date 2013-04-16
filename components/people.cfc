@@ -1,8 +1,7 @@
 ﻿component
 {
 	public any function findPerson( identifier ) hint="Retrieve a person from the the DB." {
-		var index = IsNumeric(arguments.identifier) ? "staffid"  : "username"; 
-		var s = "START node=node:person(#index# = '#arguments.identifier#') RETURN node";
+		var s = "START node=node:person(username = '#arguments.identifier#') RETURN node";
 		
 		objCypher = CreateObject("component","core.cypher");
 		
@@ -46,7 +45,7 @@
 	public any function getFollowedActivites( identifier, howmany ) hint="Retrieve a person's followers from the the DB." {
 		var s = "START node=node(#arguments.identifier#) 
 					MATCH node-[:FOLLOWS]->followers-[r:PENNED]-> activities 
-					RETURN activities.message, followers.firstname, followers.lastname, followers.staffid, followers.username, r.posted_on 
+					RETURN activities.message, followers.firstname, followers.lastname, followers.username, r.posted_on 
 					ORDER BY r.posted_on DESC 
 					LIMIT #arguments.howmany#";
 		

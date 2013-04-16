@@ -25,29 +25,24 @@
 
 	<cfoutput>
 	<cfloop array="#users#" index="user">
-		<cfset staffid = generateStaffID()>
 		<cfset str = {}>
 		<cfset str["firstname"] = trim(user.f_name)>
 		<cfset str["lastname"] = trim(user.l_name)>
-		<cfset str["staffid"] = trim(staffid)>
 		<cfset str["username"] = trim(lcase(user.f_name & "_" & user.l_name))>
-		<cfset str["startdate"] = dateAdd("d", -staffid/2, now())>
+		<cfset str["startdate"] = dateAdd("d", -(randRange(1, 2000, "SHA1PRNG"))/2, now())>
 
 		<!--- Attach the struct to the batch array. The batch array returns the id of the action so we can reference it in index and relationship operations in the same batch. --->	
 		<cfset batchID = objBatch.build("node", str)>
-		#str.firstname#, #str.lastname#, #str.staffid#, #str.username#, #str.startdate#, #batchID#<br />
-		<!--- An index on staffids --->
-		<cfset indexStaffID = {"data"={"uri"="{#batchID#}", "value"=str.staffid, "key"="staffid"}, "index"="person"}>
+		#str.firstname#, #str.lastname#, #str.username#, #str.startdate#, #batchID#<br />
 		
 		<!--- An index on usernames (twitter-esque handles). --->
 		<cfset indexUsername = {"data"={"uri"="{#batchID#}", "value"=str.username, "key"="username"}, "index"="person"}>
 		
 		<!--- Add the indexes to the batch queue --->
-		<cfset objBatch.build("index", indexStaffID)>
 		<cfset objBatch.build("index", indexUsername)>
 		
 		<!--- Create a relationship between the user reference node and the user node and add it to the batch queue. --->
-		<cfset relationship = {"from_node"=userReference.node, to_node="{#batchID#}", type="USERS"}>
+		<cfset relationship = {"from_node"=application.requires["USERS_REFERENCE"], to_node="{#batchID#}", type="USERS"}>
 		<cfset objBatch.build("relationship", relationship)>
 
 	</cfloop>
