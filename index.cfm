@@ -81,19 +81,14 @@
             </button>
         </form>
 		
-		
-
       <!-- Example row of columns -->
       <div class="row">
         <div class="span3">
           <h2>Filter</h2>
             <ul class="nav nav-tabs nav-stacked">
                 <li class="active">
-                <a href="#">Projects <span class="badge">1</span></a>
+                <a href="#">People <span class="badge">1</span></a>
                 </li>
-                <li><a href="#">Networks <span class="badge">7</span></a></li>
-                <li><a href="#">People <span class="badge">0</span></a></li>
-                <li><a href="#">Forums <span class="badge">12</span></a></li>
             </ul>
         </div>
         <div class="span6">
@@ -101,7 +96,7 @@
 		  <h2>Activity</h2>
           <ul>
           	<cfloop array="#activities.data#" index="activity">
-		  		<li>#activity[2] & ' ' & activity[3]# - #activity[1]# (#GetTimeFromEpoch(activity[5])#)</li>
+		  		<li><img src="/avatars/#left(activity[2], 1) & left(activity[3], 1)#.jpg">#activity[2] & ' ' & activity[3]# - #activity[1]# (#GetTimeFromEpoch(activity[5])#)</li>
 			</cfloop>
           </ul>
           <p><a class="btn" href="?user=#url.user#&load=#url.load+10#">Load more &raquo;</a></p>
@@ -129,6 +124,7 @@
             To experiment with the demo app please run the import scripts:
 			<ol>
 				<li><a href="_import/people.cfm">people</a></li>
+				<li><a href="_import/avatars.cfm">avatars</a></li>
 				<li><a href="_import/followers.cfm">followers</a></li>
 				<li><a href="_import/messages.cfm">messages</a></li>
 			</ol>
