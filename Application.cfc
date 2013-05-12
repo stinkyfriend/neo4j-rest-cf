@@ -1,16 +1,17 @@
 ﻿component output="false" {
 	
 	/* An example application showing how to use the Neo4j REST API.	*/
-	
 	this.name = "Neo4j";
 	this.sessionManagement = true;
 	this.sessionTimeout = createTimeSpan(0,0,5,0);
-	this.mappings["/"] = getDirectoryFromPath(getCurrentTemplatePath());
+	this.mappings["/"] = getDirectoryFromPath( getCurrentTemplatePath( ) );
 		
 	public boolean function onApplicationStart( ) {
+		
 		/* The base url for Neo4j */
 		application.urlNeo4j = "http://localhost:7474/db/data";
 		application.import_proxyserver = "";
+		application.lib = CreateObject("component","components.lib");
 		
 		setup();
 		
@@ -18,6 +19,10 @@
 	}
 	
 	public void function onSessionStart() {
+		
+		if (application.ready) {
+			session.user = createObject("component","components.person").init("andrew_fandrew");
+		}
 		
 		return;
 	}
@@ -28,6 +33,7 @@
 		/* If you have changed any application scoped vars e.g. Neo4j URL endpoint then append ?restart=1 to your URL */
 		if(StructKeyExists(url, "restart")) {
 			onApplicationStart( );
+			onSessionStart( );
 		}
 
 		/* If any of the checks fail we throw the error. Note we pass a JSON _array_ so that we can show all errors. */		
@@ -38,7 +44,7 @@
 		return true;
 	}
 	
-	public function setup() {
+	public void function setup() {
 		
 		/* You can explicitly tell your application what relationships you want from your reference node */
 		application.requires = {"MESSAGES_REFERENCE"="","USERS_REFERENCE"=""};
@@ -55,20 +61,23 @@
 		if (application.requires["REFERENCE_NODE"] is not "") {
 			objNode = CreateObject("component","core.nodes");
 			arrOutRels = objNode.outgoing(application.requires["REFERENCE_NODE"]);
+			/* Looping through the outgoing relationships from the service root we find out the 'node ids'
+				of the 'required' nodes. */
 			for (i = 1; i LTE ArrayLen(arrOutRels); i++) {
 				if (StructKeyExists(application.requires, arrOutRels[i].type)) {
 					application.requires["#arrOutRels[i].type#"] = ListLast(arrOutRels[i].end, "/");
+					/* We decrement the requiresCount */
 					requiresCount = requiresCount - 1;
 				}
 			}
+			/* If the requires count is  0 it means we have all the nodes and the sample application is ready */ 
 			application.ready = requiresCount eq 0;
 		}
 	}
 
 	public void function onError( exception ) {
 		/* The error handling bit.
-			If setting up the application fails then we include the error.cfm.
-		 */
+			If setting up the application fails then we include the error.cfm. */
 		var errorMessage = "";
 		var errorCode = "";
 		var errorBody = "";

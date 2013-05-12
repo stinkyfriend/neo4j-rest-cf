@@ -27,7 +27,6 @@
 		<cfset fg = UCase(len(r) lt 2 ? (r & RepeatString(0, (2-len(r)))) : r) &
 					UCase(len(g) lt 2 ? (g & RepeatString(0, (2-len(g)))) : g) & 
 					UCase(len(b) lt 2 ? (b & RepeatString(0, (2-len(b)))) : b)>
-		<!---<cfoutput>#initials# <span style="background-color: ###bcg#;color: ###fg#">#initials#</span></cfoutput><br>---> 
 		<cfset image = ImageNew("", 50, 50, "rgb", bcg)>
 		<cfset m = {font="impact", size=25, style="bold"}>
 		<cfset ImageSetDrawingColor(image, fg)>
