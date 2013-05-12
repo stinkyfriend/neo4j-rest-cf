@@ -7,6 +7,7 @@
 	property name="Accept" default="application/json; stream=true;";
 	property name="ContentType";
 	property name="Breakpoint" default="false";
+	property name="ConvertToQuery" default="false";
 	
 	public core function init( ) {
 
@@ -67,15 +68,46 @@
 	
 	private any function processResults( httpFileContent ) {
 		var response = "";
+		var returnValue = "";
 		
 		if (isJSON(arguments.httpFileContent)) {
+			
 			response = DeserializeJSON(arguments.httpFileContent);
+			
+			if (getConvertToQuery()) {
+				returnValue = fconvertToQuery( neoData=response );
+			} else {
+				returnValue = response;
+			}
+			
 		} else {
 			writeDump(arguments.httpFileContent);
 			abort;
 				throw (message="neo4j Error: The response from neo4j is not as expected.");
 		}
 		
-		return response;
+		return returnValue;
+	}
+	
+	private any function fconvertToQuery( neoData ) {
+		var qry = QueryNew("");
+		var iterColumns = arguments.neoData.columns.iterator();
+		var iterData = [];
+		var position = 0;
+				
+		while(iterColumns.hasNext()){
+			position++;
+			columnName = iterColumns.next();
+			values = [];
+			
+			iterData = arguments.neoData.data.iterator();
+			while(iterData.hasNext()){
+				ArrayAppend(values, iterData.next()[position]);
+			}
+			QueryAddColumn(qry,columnName,values);
+			
+		}
+		
+		return qry;
 	}
 }
