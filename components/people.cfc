@@ -1,5 +1,11 @@
 ﻿component
 {
+	public any function init( identifier ) {
+		this.userHandle = arguments.identifier;	
+		
+		return this;
+	}
+		
 	public any function findPerson( identifier ) hint="Retrieve a person from the the DB." {
 		var s = "START node=node:person(username = '#arguments.identifier#') RETURN node";
 		
@@ -42,8 +48,22 @@
 		return str;
 	}
 	
-	public any function getFollowedActivites( identifier, howmany ) hint="Retrieve a person's followers from the the DB." {
+	public any function getActivity( identifier ) hint="Retrieve a person's activity from the the DB." {
 		var s = "START node=node(#arguments.identifier#) 
+					MATCH node-[:PENNED]->activities 
+					RETURN activities";
+		
+		objCypher = CreateObject("component","core.cypher");
+		
+		str = objCypher.query(queryString=s);
+		
+		writeDump(str);abort;
+
+		return str;
+	}
+	
+	public any function getFollowedActivites( identifier, howmany ) hint="Retrieve a person's followers activity from the the DB." {
+		var s = "START node = node(#arguments.identifier#) 
 					MATCH node-[:FOLLOWS]->followers-[r:PENNED]-> activities 
 					RETURN activities.message, followers.firstname, followers.lastname, followers.username, r.posted_on 
 					ORDER BY r.posted_on DESC 
