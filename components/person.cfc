@@ -36,7 +36,8 @@
 				 MATCH		node-[:FOLLOWS]-> followed 
 				 RETURN		followed.firstname AS firstname, 
 				 			followed.lastname AS lastname, 
-				 			followed.username AS handle
+				 			followed.username AS handle,
+				 			0 AS incommon
 				 ORDER BY 	followed.lastname ASC, followed.firstname ASC";
 		
 		var data = this.objCypher.query(queryString=s, convertToQuery=true);
@@ -49,7 +50,37 @@
 				 MATCH		node<-[:FOLLOWS]- followers 
 				 RETURN		followers.firstname AS firstname, 
 				 			followers.lastname AS lastname, 
-				 			followers.username AS handle";
+				 			followers.username AS handle,
+				 			0 AS incommon
+				 ORDER BY 	followers.lastname ASC, followers.firstname ASC";
+		
+		var data = this.objCypher.query(queryString=s, convertToQuery=true);
+
+		return data;
+	}
+	
+	public any function getCommonFollowing( ) hint="Retrieve a list of followers for a person, indicate which followers are shared with the current user." {
+		var s = "START 		primary = node( #getNodeID()# ), secondary = node( #session.user.getNodeID()# )
+				 MATCH		primary -[:FOLLOWS]-> followed <-[r?:FOLLOWS]- secondary
+				 RETURN		followed.firstname AS firstname, 
+				 			followed.lastname AS lastname, 
+				 			followed.username AS handle,
+				 			count(r) AS incommon
+				 ORDER BY 	followed.lastname ASC, followed.firstname ASC";
+		
+		var data = this.objCypher.query(queryString=s, convertToQuery=true);
+
+		return data;
+	}
+	
+	public any function getCommonFollowers( ) hint="Retrieve a list of people following a person, indicate who are also following the current user." {
+		var s = "START		primary = node( #getNodeID()# ), secondary = node( #session.user.getNodeID()# )
+				 MATCH		primary <-[:FOLLOWS]- followers -[r?:FOLLOWS]-> secondary
+				 RETURN		followers.firstname AS firstname, 
+				 			followers.lastname AS lastname, 
+				 			followers.username AS handle,
+				 			count(r) AS incommon
+				 ORDER BY 	followers.lastname ASC, followers.firstname ASC";
 		
 		var data = this.objCypher.query(queryString=s, convertToQuery=true);
 

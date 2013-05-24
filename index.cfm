@@ -6,8 +6,8 @@
 	<cfif len(url.user)>
 		<cfset objPerson = createObject("component","components.person")>
 		<cfset currentUser = objPerson.init( url.user )>
-		<cfset following = objPerson.getFollowing( )>
-		<cfset followers = objPerson.getFollowers( )>
+		<cfset following = objPerson.getCommonFollowing( )>
+		<cfset followers = objPerson.getCommonFollowers( )>
 		<cfset activities = objPerson.getActivites( howmany=url.load )>
 		<cfset viewingWho = (session.user.getHandle() is url.user ? "Your" : "#objPerson.getFirstname()#'s") & " Activity">
 		<cfset viewing = "other">
@@ -128,12 +128,12 @@
 		</div>
 		<div class="span3">
 			<h3>Following</h3>
-			<ul>
-				<cfoutput query="following"><li><a href="?user=#handle#">#firstname & ' ' & lastname#</a></li></cfoutput>
+			<ul class="unstyled">
+				<cfoutput query="following"><cfset class = incommon ? ' <i class="icon-ok-circle"></i> ' : ""><li><a href="?user=#handle#">#firstname & ' ' & lastname#</a>#class#</li></cfoutput>
 			</ul>
 			<h3>Followers</h3>
-			<ul>
-				<cfoutput query="followers"><li><a href="?user=#handle#">#firstname & ' ' & lastname#</a></li></cfoutput>
+			<ul class="unstyled">
+				<cfoutput query="followers"><cfset class = incommon ? ' <i class="icon-ok-circle"></i> ' : ""><li><a href="?user=#handle#">#firstname & ' ' & lastname#</a>#class#</li></cfoutput>
 			</ul>
 		</div>
 	</div>
